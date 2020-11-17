@@ -1,5 +1,5 @@
 <html>
-    <body>
+<!--
         <div>
             <input type='text' id='loginUsername' placeholder='Username'/>
             <input type='text' id='loginPassword' placeholder='Password'/>
@@ -8,8 +8,105 @@
             <input type='text' id='registerUsername' placeholder='Username'/>
             <input type='text' id='registerPassword' placeholder='Password'/>
         </div>
-    </body>
-    <script src='data/js/avail.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.1/socket.io.js'></script>
-    <script src='data/js/index.js'></script>
+        -->
+
+<head>
+    <link rel='stylesheet' href='data/css/style.css' />
+    <link rel="stylesheet" href='data/fontawesome-free-5.15.1-web/css/all.css' />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+            initial-scale=1.0">
+</head>
+
+<body>
+    <canvas id='img-compress'></canvas>
+    <div class='container'>
+        <div class='login' id='login'>
+            <div class='cube front'>
+                <div class='selector-round'></div>
+                <div class='menu-bars'>
+                    <div class='bar1'></div>
+                    <div class='bar2'></div>
+                    <div class='bar3'></div>
+                </div>
+                <div class='selector selector-bottom'>
+                    <span class="fas fa-question" aria-hidden="true"></span>
+                </div>
+                <div class='selector selector-top' onclick='signIn()'>
+                    <span class="fas fa-sign-in-alt" aria-hidden="true"></span>
+                </div>
+                <div class='selector selector-right' onclick='registerForm()'>
+                    <span class="fas fa-user-plus" aria-hidden="true"></span>
+                </div>
+                <div class='selector selector-left'>
+                    <span class="fas fa-users-cog" aria-hidden="true"></span>
+                </div>
+                <div class='register-menu' id='registerMenu'>
+                    <div class='reg_avatar' id='avatar'>
+                        <div class='change-avatar'>
+                        <i class="fas fa-camera" onclick="document.getElementById('avatarSelector').click();"></i>
+                            <input type='file' id='avatarSelector'></input>
+                        </div>
+                    </div>
+                    <div class='reg_username'>
+                        <div class='reg_title'>Username</div>
+                        <input type='text' id='regUsername' spellcheck='false'></input>
+                    </div>
+                    <div class='reg_password'>
+                        <div class='reg_title'>Password</div>
+                        <input type='password' id='regPass'></input>
+                    </div>
+                    <div class='reg_re_password'>
+                        <div class='reg_title'>Re-enter password</div>
+                        <input type='password' id='regPass_re'></input>
+                    </div>
+                    <div class='reg_btn'>
+                        <input type='button' value='Sign up' onclick='signUp()'/>
+                    </div>
+                </div>
+            </div>
+            <div class='cube right'>
+                <input type='button' class='password-icon back-btn'>
+                <div class='username-btn'>
+                    <input type='password' id='password' spellcheck='false' />
+                    <span id='passwordBtnHolder'>password</span>
+                </div>
+                <input type='button' class='next-btn' id='passwordNextBtn'>
+            </div>
+            <div class='cube back'>
+                <div class="lds-spinner">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class='cube-back--close-btn' id='closeBtn'></div>
+            </div>
+            <div class='cube left'>
+                <input type='button' class='user-name-icon
+                        back-btn'>
+                <div class='username-btn'>
+                    <input type='text' id='username' spellcheck='false' />
+                    <span id='usernameBtnHolder'>username</span>
+                </div>
+                <input type='button' class='next-btn' id='usernameNextBtn'>
+            </div>
+            <div class='cube top'></div>
+            <div class='cube bottom'></div>
+        </div>
+    </div>
+</body>
+<script src='data/js/avail.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.1/socket.io.js'></script>
+<script src='data/js/main.js'></script>
+<script src='data/js/index.js'></script>
+
 </html>
