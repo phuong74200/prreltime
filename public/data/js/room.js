@@ -1,6 +1,6 @@
 (function () {
 
-    let socket = io('ws://127.0.0.1:7420');
+    let socket = io('127.0.0.1:7420');
 
     let storage = {
         username: '',
@@ -21,7 +21,8 @@
             if (e.which == 13) {
                 socket.emit('message', {
                     tokens: getCookie('tokens'),
-                    message: e.target.value
+                    message: e.target.value,
+                    username: storage.username,
                 })
                 selfMessage(storage.username, e.target.value)
                 if (storage.notification) {
@@ -34,11 +35,16 @@
             }
         })
 
+        socket.on('/index', res => {
+            window.location = '/index'
+        })
+
         socket.on('new_user_online', res => {
             console.log(res)
             if ($(`#${md5(res.username)}`)) {
                 $(`#${md5(res.username)}`).setAttribute('username', res.username + '_online')
                 $(`#${md5(res.username)}`).querySelector('.avatar-container').style.border = '2px solid green'
+                $('#sOnline').textContent = parseInt($('#sOnline').textContent) + 1
             } else {
                 let avatar = appendNewUser(res.username)
                 fetch('/get/avatar/' + res.username)
@@ -53,10 +59,12 @@
         socket.on('new_user_leave', res => {
             $(`#${md5(res)}`).setAttribute('username', res + '_offline')
             $(`#${md5(res)}`).querySelector('.avatar-container').style.border = '2px solid red'
+            $('#sOnline').textContent = parseInt($('#sOnline').textContent) - 1
         })
 
         socket.on('message', data => {
             pushMessage(data.username, data.message)
+            console.log(data)
             if (storage.notification) {
                 var audio = new Audio('../data/audio/when-604.mp3');
                 audio.volume = 0.7;
@@ -153,7 +161,6 @@
             }).then(res => {
                 return res.json();
             }).then(dat => {
-                console.log(dat)
                 dat.sort(function (a, b) { return a.timeStamp - b.timeStamp });
                 for (let mes of dat) {
                     if (mes.username == username) {
@@ -182,15 +189,17 @@
         online.appendChild(name)
         avatarContainer.appendChild(avatar)
         $('#onlineUsers').appendChild(online)
+        $('#sUser').textContent = parseInt($('#sUser').textContent) + 1
         if (status == 'offline') {
             avatarContainer.style.border = '2px solid red'
             online.setAttribute('username', username + '_offline')
+        } else {
+            $('#sOnline').textContent = parseInt($('#sOnline').textContent) + 1
         }
         return online;
     }
 
     $('#chatDisplay').on("scroll", function (e) {
-        console.log((e.target.scrollTop / e.target.scrollHeight) * 100)
         $('#scrollMeter').style.width = `${(e.target.scrollTop / e.target.scrollHeight) * 100}%`
     }, false);
 
@@ -219,6 +228,7 @@ $('#searchBox').on('keyup', function (e) {
 
 function pushMessage(username, message) {
     if (message.trim().length > 0) {
+        $('#sReply').textContent = parseInt($('#sReply').textContent) + 1
         let chatPop = $('#chatPop').cloneNode(true)
         chatPop.querySelector('span').textContent = message
         chatPop.querySelector('.username-label').textContent = username
@@ -235,6 +245,7 @@ function pushMessage(username, message) {
 
 function selfMessage(username, message) {
     if (message.trim().length > 0) {
+        $('#sReply').textContent = parseInt($('#sReply').textContent) + 1
         let chatPop = $('#chatPop').cloneNode(true)
         chatPop.querySelector('.chat-message').textContent = message
         chatPop.querySelector('.chat-message').style.background = '#004DFC'
@@ -251,4 +262,9 @@ function selfMessage(username, message) {
         $('#chatDisplay').appendChild(chatPop)
         $('#chatDisplay').scrollTop = $('#chatDisplay').scrollHeight;
     }
+}
+
+function auto_grow(element) {
+    element.style.height = "16px";
+    element.style.height = (element.scrollHeight) + "px";
 }

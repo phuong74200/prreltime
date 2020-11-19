@@ -1,4 +1,4 @@
-const socket = io('ws://localhost:7420');
+const socket = io('127.0.0.1:7420');
 
 setCookie('tokens', '', 0)
 
@@ -27,7 +27,7 @@ function calert(cnt) {
     div.className = 'alert'
     div.textContent = cnt;
     $('body')[0].appendChild(div)
-    setTimeout(function() {
+    setTimeout(function () {
         div.remove();
     }, 10000)
 }
@@ -85,6 +85,13 @@ function register(username, password) {
     }).then(dat => {
         if (dat.response == 'register_success') {
             login(username, password)
+        } else if (dat.response == 'register_fail_password_short') {
+            $('#regPass').value = ''
+            $('#regPass_re').value = ''
+            calert(dat.message)
+            $('#regPass').placeholder = dat.message
+            $('#regPass_re').placeholder = dat.message
+            $('#regPass').focus();
         } else {
             $('#regUsername').value = ''
             calert(dat.message)

@@ -9,13 +9,15 @@ const cookieParser = require('cookie-parser');
 const md5 = require('md5');
 const { time } = require('console');
 const { json } = require('express');
+const os = require('os')
 
+var networkInterfaces = os.networkInterfaces();
 
 app.use(cookieParser())
 
 let options = {
     cors: true,
-    origins: ["http://127.0.0.1:8080"],
+    origins: ["127.0.0.1:7420"],
 }
 const io = require('socket.io')(server, options);
 
@@ -137,6 +139,27 @@ app.post('/register', (req, res) => {
                 message: 'Username existed',
                 response: 'register_fail'
             })
+        } else if (body.username.replace(/\s/g, '').length <= 4) {
+            res.json({
+                success: true,
+                status: STATUS.exist,
+                message: 'Username too short',
+                response: 'register_fail'
+            })
+        } else if (body.username.replace(/\s/g, '').length >= 8) {
+            res.json({
+                success: true,
+                status: STATUS.exist,
+                message: 'Username too long',
+                response: 'register_fail'
+            })
+        } else if (body.password.replace(/\s/g, '').length <= 4) {
+            res.json({
+                success: true,
+                status: STATUS.exist,
+                message: 'Password too short',
+                response: 'register_fail_password_short'
+            })
         } else if (docs.length == 0) {
             const USER_HASH = Math.random()
             db.user.insert({
@@ -235,7 +258,7 @@ io.on('connect', socket => {
     socket.on('message', data => {
         if (data.message.trim().length > 0) {
             db.user.find({ tokens: data.tokens }, (err, docs) => {
-                if (docs.length) {
+                if (docs.length && data.username == docs[0].username) {
                     let timeStamp = new Date(new Date).getTime();
                     db.message.insert({
                         username: docs[0].username,
@@ -247,6 +270,8 @@ io.on('connect', socket => {
                         message: data.message,
                         avatar_id: docs[0].avatar_id
                     })
+                } else {
+                    socket.emit('/index')
                 }
             })
         }
