@@ -1,6 +1,6 @@
 //configs
 const configs = {
-    encodeElementsId: false
+    encodeElementsId: true
 }
 //configs
 
@@ -19,7 +19,6 @@ const Event = function () {
 }
 
 const $ = function (def) {
-
     let elm = null;
 
     if (typeof def == 'string' && def.charAt(0) == '#') {
@@ -35,7 +34,7 @@ const $ = function (def) {
         for (let dom of def) {
             elm.push($(dom))
         }
-    }
+    };
 
     if (elm == null) {
         elm = document.getElementById(md5(def.slice(1, def.length)).substring(0, 12));
@@ -114,7 +113,7 @@ const $ = function (def) {
                 console.log(events)
             }
             if (Array.isArray(elm)) {
-                for (let child of elm) {
+                for(let child of elm) {
                     for (let event of events) {
                         child.addEventListener(event, callback, useCapture);
                     }
@@ -168,11 +167,9 @@ const $ = function (def) {
     }
     //Avail function
 
-    if (elm) {
-        availFunctionPropertype(elm)
-        for (let i = 0; i < elm.length; i++) {
-            availFunctionPropertype(elm[i])
-        }
+    availFunctionPropertype(elm)
+    for (let i = 0; i < elm.length; i++) {
+        availFunctionPropertype(elm[i])
     }
 
     return elm;
